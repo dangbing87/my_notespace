@@ -18,19 +18,20 @@ class ResquestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self._writeheaders()
         self.wfile.write(
-                """
-                <html>
-                    <head>
-                        <title>hello world</title>
-                    <head>
-                    <body>
-                        <p>hello world</p>
-                    <body>
-                </html>
-                """
-                )
+            """
+            <html>
+                <head>
+                    <title>hello world</title>
+                <head>
+                <body>
+                    <p>hello world</p>
+                <body>
+            </html>
+            """
+            )
 
 
-server_addr = ('', 9999)
-srvr = HTTPServer(server_addr, ResquestHandler)
-srvr.serve_forever()
+if __name__ == '__main__':
+    server = ('', 9999)
+    srvr = HTTPServer(server, ResquestHandler)
+    srvr.serve_forever()
