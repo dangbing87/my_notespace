@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html ng-app="todoApp">
+<head>
+    <meta charset="UTF-8">
+    <title>todo list</title>
+</head>
+<body ng-controller="TodoListCtrl">
+
+    <input type="text" ng-model="todoItem" />
+    <button type="button" ng-click="addItem()">添加</button>
+    <ul>
+        <li ng-repeat="todoItem in todoList" >
+            <p ng-show="todoItem.isFinish==false" ng-click="done(todoItem.$$hashKey)">{{ todoItem.item }}</p>
+            <p ng-show="todoItem.isFinish==true" ng-click="done(todoItem.$$hashKey)">done {{ todoItem.item }}</p>
+        </li>
+    </ul>
+
+    <script src="//cdn.bootcss.com/jquery/2.1.1/jquery.js"></script>
+    <script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
+    <script src="js/todo/controllers.js" type="text/javascript"></script>
+</body>
+</html>
