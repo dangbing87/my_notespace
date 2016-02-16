@@ -75,4 +75,4 @@ setTodoList(todoList);
 todoList.display();
 
 todoList.deleteItem(1);
-todoList.display()
+todoList.display();
