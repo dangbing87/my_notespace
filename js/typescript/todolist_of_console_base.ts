@@ -4,14 +4,27 @@ enum Status {
     dont,
 };
 
+
 interface TodoModel {
     id: number;
     item: string;
     status: Status;
 }
 
-class TodoCtrl {
-    private todoList: Array<TodoModel>;
+
+interface TodoList {
+    todoList: Array<TodoModel>;
+
+    getTodo(id: number): TodoModel;
+    addTodo(todo: TodoModel): void;
+    changeStatus(id: number, status: Status): void;
+    deleteItem(id: number): void;
+    display(): void;
+}
+
+
+class TodoCtrl implements TodoList {
+    todoList: Array<TodoModel>;
 
     constructor() {
         this.todoList = [];
@@ -48,7 +61,7 @@ class TodoCtrl {
     }
 
     display(): void {
-        this.todoList.forEach(todo=>{
+        this.todoList.forEach(todo=> {
             var todoInfo = `id: ${todo.id}  item: ${todo.item}   status: ${todo.status}`;
             console.log(todoInfo);
         });
