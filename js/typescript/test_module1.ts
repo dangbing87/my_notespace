@@ -1,5 +1,5 @@
 ///<reference path="module_ex.d.ts"/>
-import todo = require("Todo");
+import todo = require("./module_ex");
 
 class TodoCtrl implements todo.TodoInterface {
 
