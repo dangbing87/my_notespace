@@ -1,0 +1,143 @@
+.new-infomation-list dl {
+  border: 1px solid #C31A1E;
+  background: #FFF;
+}
+
+.new-infomation-list dt {
+  background: #C31A1E;
+  color: #fff;
+  padding: 10px 30px;
+}
+
+.new-infomation-list dd {
+  margin: 0 30px;
+  border-bottom: 1px dashed #ccc;
+  padding: 15px 0;
+}
+
+.brief-introduction {
+  border-bottom: 1px solid #C31A1E;
+  padding-bottom: 20px;
+}
+
+.brief-introduction h4 {
+  background: #C31A1E;
+  color: #fff;
+  padding: 10px 30px;
+  font-weight: bold;
+}
+
+.brief-introduction .article-content {
+  text-indent: 2em;
+}
+
+.brief-introduction .article-content a {
+  color: #C31A1E;
+}
+
+.about-nav {
+  background: #C31A1E;
+  color: #FFF;
+}
+
+.about-nav li {
+  float: left;
+  width: 20%;
+  overflow: hidden;
+}
+
+.about-nav .nav-icon,
+.about-nav .nav-text {
+  float: left;
+}
+
+
+.about-nav .nav-text {
+  line-height: 26px;
+  letter-spacing: 10px;
+}
+
+.about-nav .nav-icon {
+  display: block;
+  width: 50px;
+  height: 50px;
+  border: 1px solid #fff;
+  margin: 0 10px;
+}
+
+.kind-list {
+  margin-top: 30px;
+}
+
+.kind-list li {
+  float: left;
+}
+
+.kind-list a {
+  display: block;
+  background: #C31A1E;
+  color: #FFF;
+  padding: 10px 0;
+  width: 100%;
+}
+
+.custom-kind-table {
+  margin-top: 30px;
+}
+
+.custom-kind-table table {
+  border: 1px solid #C31A1E;
+}
+
+.custom-kind-table table caption {
+  border: 1px solid #C31A1E;
+  border-bottom: none;
+  font-style: normal;
+  color: #c31A1e;
+  font-size: 16px;
+  padding: 10px 30px;
+  position: relative;
+}
+
+.custom-kind-table table td {
+  border-bottom: none;
+  border-right: 1px solid #C31A1E;
+  font-size: 14px;
+  text-align: center;
+}
+
+.custom-kind-table table caption a {
+  color: #C31A1E;
+  position: absolute;
+  right: 30px;
+}
+
+.contact-me {
+  margin-top: 60px;
+}
+
+.contact-me ul {
+  margin: 0;
+  border-top: 1px solid #636363;
+  border-bottom: 1px solid #636363;
+  color: #636363;
+  padding: 15px 0;
+}
+
+.contact-me li {
+  text-align: left;
+  float: left;
+  border-right: 1px solid #636363;
+}
+
+.contact-me .contact-way-icon {
+  display: block;
+  width: 50px;
+  height: 50px;
+  background: #ddd;
+  margin: 0 10px;
+}
+
+.contact-me .li-last {
+  border-right: none;
+}

@@ -1,0 +1,22 @@
+{
+  "name": "zuode",
+  "authors": [
+    "danny <alanglianqu@qq.com>"
+  ],
+  "description": "js/lib",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^2.2.1",
+    "uikit": "^2.25.0"
+  }
+}
