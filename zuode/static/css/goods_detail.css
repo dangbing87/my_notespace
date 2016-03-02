@@ -1,0 +1,100 @@
+.goods-detail-content {
+  border: 1px solid #AFAFAF;
+}
+
+.goods-detail {
+  padding: 30px;
+}
+
+.goods-detail .goods-picture img {
+  border: 1px solid #B1B1B1;
+  padding: 10px;
+}
+
+.goods-detail .goods-picture .thumbnail-list {
+  margin-top: 14px;
+}
+
+.goods-detail .goods-info {
+  text-align: left;
+}
+
+.goods-detail .goods-info dt {
+  border-bottom: 1px solid #C31A1E;
+  color: #C31A1E;
+  font-size: 16px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.goods-detail .goods-info dl ul {
+  padding-top: 10px;
+}
+
+.goods-detail .goods-info li {
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.goods-detail .goods-info .classify-info {
+  margin-bottom: 30px;
+}
+
+.goods-detail .goods-info .phone-info {
+  margin-top: 30px;
+}
+
+.goods-detail .goods-info .phone-info>.phone-number {
+  color: #C31A1E;
+  padding-left: 5px;
+  font-size: 20px;
+}
+
+
+.goods-detail-content h4,
+.goods-detail-content h4 a {
+  color: #C31A1E;
+}
+
+.goods-detail-content h4 {
+  background: #E5E5E5;
+  border-bottom: 1px solid #AFAFAF;
+  padding: 10px 15px;
+  margin-bottom: 5px;
+}
+
+.goods-detail-content h4 .g-fg-grey {
+  color: #858585;
+}
+
+.goods-detail-content h4 .square {
+  display: block;
+  float: left;
+  width: 20px;
+  height: 20px;
+  background: #C31A1E;
+  margin: 3px 10px 0 0;
+}
+
+.goods-detail-content .goods-introduce {
+  padding: 0 30px;
+}
+
+.goods-detail-content .goods-introduce h4 {
+  background: #C31A1E;
+  color: #fff;
+}
+
+.goods-detail-content .goods-introduce h4 .square {
+  background: #fff;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+}
+
+.goods-detail-content .goods-introduce .introduce-info {
+  color: #8B8B8B;
+  text-align: left;
+  font-size: 14px;
+  margin: 20px 0;
+}
