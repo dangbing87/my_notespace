@@ -1,7 +1,15 @@
 ///<reference path="../typings/react/react-global" />
 ///<reference path="ui_interface" />
+///<reference path="todo_models" />
 
-private var classesDivideChar = " ";
+private const classesDivideChar = " ";
+private var todoArray: Array<TodoModel> = [
+    { id: 1, matter: "one", completed: false }
+    { id: 2, matter: "two", completed: false }
+    { id: 3, matter: "three", completed: false }
+    { id: 4, matter: "four", completed: false }
+    { id: 5, matter: "five", completed: false }
+];
 
 class AppHeader extends React.Component<any, any> implements AppHeader {
     render() {
@@ -91,13 +99,34 @@ class AddTodoForm extends React.Component<any, any> {
         "uk-margin-left"
     ].join(classesDivideChar)
 
+    public state: TodoModel;
+
+    handleAddTodo(e) {
+        e.preventDefault();
+
+        var todo: TodoModel,
+            matter: string = this.refs.matter.value.trim(),
+            completed: boolean = false;
+
+        if (matter != "") {
+            todo = {
+                matter: matter,
+                completed: completed
+            };
+
+            this.refs.matter.value = "";
+
+            this.props.handlerRefreshState(todo);
+        }
+    }
+
     render() {
         return (
-            <form className={this.formClasses}>
+            <form className={this.formClasses} onSubmit={this.handleAddTodo.bind(this)}>
                 <input type="text"
-                 className="uk-width-1-2" />
-                <input type="button"
-
+                 className="uk-width-1-2"
+                 ref="matter" />
+                <input type="submit"
                  className={this.submitButtonClasses}
                  value="Add" />
             </form>
@@ -106,16 +135,36 @@ class AddTodoForm extends React.Component<any, any> {
 }
 
 class TodoList extends TodoListBase implements TodoList {
+    public state = { data: [] };
+
+    componentDidMount() {
+        this.setState({ data: todoArray });
+    }
+
+    handlerRefreshState(todo: TodoModel) {
+        var data = this.state.data;
+
+        data.push(todo);
+        this.setState({ data: data });
+    }
+
     render() {
+        var childNodes = this.state.data.map((todo) => {
+            return (
+                <li className={this.liClasses}>
+                    <label>
+                        <input type="checkbox" onChange={} />
+                        {todo.matter}
+                    </label>
+                </li>
+            );
+        });
+
         return (
             <TodoListContainer>
-                <AddTodoForm />
-
+                <AddTodoForm handlerRefreshState={this.handlerRefreshState.bind(this)} />
                 <ul className={this.ulClasses}>
-                    <li className={this.listClasses}>aaa</li>
-                    <li className={this.listClasses}>aaa</li>
-                    <li className={this.listClasses}>aaa</li>
-                    <li className={this.listClasses}>aaa</li>
+                    {childNodes}
                 </ul>
             </TodoListContainer>
         );
@@ -123,14 +172,25 @@ class TodoList extends TodoListBase implements TodoList {
 }
 
 class CompleteList extends TodoListBase implements CompleteList {
+    public state = { data: [] };
+
+    componentDidMount() {
+        this.setState({ data: todoArray });
+    }
+
     render() {
+        var childNodes = this.state.data.map((todo) => {
+            if (todo.completed) {
+                return (
+                    <li className={this.liClasses}>{todo.matter}</li>
+                );
+            }
+        });
+
         return (
             <TodoListContainer>
                 <ul className={this.ulClasses}>
-                    <li className={this.listClasses}>bbb</li>
-                    <li className={this.listClasses}>bbb</li>
-                    <li className={this.listClasses}>bbb</li>
-                    <li className={this.listClasses}>bbb</li>
+                    {childNodes}
                 </ul>
             </TodoListContainer>
         );

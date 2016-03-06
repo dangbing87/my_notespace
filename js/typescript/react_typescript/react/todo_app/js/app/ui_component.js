@@ -1,11 +1,19 @@
 ///<reference path="../typings/react/react-global" />
 ///<reference path="ui_interface" />
+///<reference path="todo_models" />
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var classesDivideChar = " ";
+var todoArray = [
+    { id: 1, matter: "one", completed: false },
+    { id: 2, matter: "two", completed: false },
+    { id: 3, matter: "three", completed: false },
+    { id: 4, matter: "four", completed: false },
+    { id: 5, matter: "five", completed: false }
+];
 var AppHeader = (function (_super) {
     __extends(AppHeader, _super);
     function AppHeader() {
@@ -89,8 +97,20 @@ var AddTodoForm = (function (_super) {
             "uk-margin-left"
         ].join(classesDivideChar);
     }
+    AddTodoForm.prototype.handleAddTodo = function (e) {
+        e.preventDefault();
+        var todo, matter = this.refs.matter.value.trim(), completed = false;
+        if (matter != "") {
+            todo = {
+                matter: matter,
+                completed: completed
+            };
+            this.refs.matter.value = "";
+            this.props.handlerRefreshState(todo);
+        }
+    };
     AddTodoForm.prototype.render = function () {
-        return (React.createElement("form", {"className": this.formClasses}, React.createElement("input", {"type": "text", "className": "uk-width-1-2"}), React.createElement("input", {"type": "button", "className": this.submitButtonClasses, "value": "Add"})));
+        return (React.createElement("form", {"className": this.formClasses, "onSubmit": this.handleAddTodo.bind(this)}, React.createElement("input", {"type": "text", "className": "uk-width-1-2", "ref": "matter"}), React.createElement("input", {"type": "submit", "className": this.submitButtonClasses, "value": "Add"})));
     };
     return AddTodoForm;
 })(React.Component);
@@ -98,9 +118,21 @@ var TodoList = (function (_super) {
     __extends(TodoList, _super);
     function TodoList() {
         _super.apply(this, arguments);
+        this.state = { data: [] };
     }
+    TodoList.prototype.componentDidMount = function () {
+        this.setState({ data: todoArray });
+    };
+    TodoList.prototype.handlerRefreshState = function (todo) {
+        var data = this.state.data;
+        data.push(todo);
+        this.setState({ data: data });
+    };
     TodoList.prototype.render = function () {
-        return (React.createElement(TodoListContainer, null, React.createElement(AddTodoForm, null), React.createElement("ul", {"className": this.ulClasses}, React.createElement("li", {"className": this.listClasses}, "aaa"), React.createElement("li", {"className": this.listClasses}, "aaa"), React.createElement("li", {"className": this.listClasses}, "aaa"), React.createElement("li", {"className": this.listClasses}, "aaa"))));
+        var childNodes = this.state.data.map(function (todo) {
+            return (React.createElement("li", {"className": this.liClasses}, React.createElement("label", null, React.createElement("input", {"type": "checkbox", "onChange": }), todo.matter)));
+        });
+        return (React.createElement(TodoListContainer, null, React.createElement(AddTodoForm, {"handlerRefreshState": this.handlerRefreshState.bind(this)}), React.createElement("ul", {"className": this.ulClasses}, childNodes)));
     };
     return TodoList;
 })(TodoListBase);
@@ -108,9 +140,18 @@ var CompleteList = (function (_super) {
     __extends(CompleteList, _super);
     function CompleteList() {
         _super.apply(this, arguments);
+        this.state = { data: [] };
     }
+    CompleteList.prototype.componentDidMount = function () {
+        this.setState({ data: todoArray });
+    };
     CompleteList.prototype.render = function () {
-        return (React.createElement(TodoListContainer, null, React.createElement("ul", {"className": this.ulClasses}, React.createElement("li", {"className": this.listClasses}, "bbb"), React.createElement("li", {"className": this.listClasses}, "bbb"), React.createElement("li", {"className": this.listClasses}, "bbb"), React.createElement("li", {"className": this.listClasses}, "bbb"))));
+        var childNodes = this.state.data.map(function (todo) {
+            if (todo.completed) {
+                return (React.createElement("li", {"className": this.liClasses}, todo.matter));
+            }
+        });
+        return (React.createElement(TodoListContainer, null, React.createElement("ul", {"className": this.ulClasses}, childNodes)));
     };
     return CompleteList;
 })(TodoListBase);
