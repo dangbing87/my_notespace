@@ -1,0 +1,19 @@
+{
+  "name": "todo_app",
+  "homepage": "https://github.com/wskssau/my_notespace",
+  "authors": [
+    "hexiang <1211740652@qq.ocm>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "js/lib",
+    "test",
+    "tests"
+  ]
+}
