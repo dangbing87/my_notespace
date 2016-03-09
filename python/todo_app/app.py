@@ -41,6 +41,7 @@ def get_todo_list(**kwargs):
             'matter': todo.get('matter', ''),
             'completed': todo.get('completed', '')
         })
+
     return data, count
 
 
