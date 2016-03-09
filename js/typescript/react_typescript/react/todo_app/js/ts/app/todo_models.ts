@@ -1,5 +1,5 @@
 interface TodoModel {
   id: number;
-  matter<string>;
-  complete<boolean> = false;
+  matter: string;
+  complete: boolean;
 }

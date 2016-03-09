@@ -27,7 +27,7 @@ ReactDOM.render(
     <Router>
         <Route path="/" component={App}>
             <IndexRoute component={TodoList} />
-            <Route path="complete_list" component={CompleteList} />
+            <Route path="complete_list" component={CompletedList} />
         </Route>
     </Router>,
     document.body

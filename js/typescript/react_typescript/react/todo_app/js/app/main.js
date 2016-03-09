@@ -21,4 +21,4 @@ var App = (function (_super) {
     };
     return App;
 })(React.Component);
-ReactDOM.render(React.createElement(Router, null, React.createElement(Route, {"path": "/", "component": App}, React.createElement(IndexRoute, {"component": TodoList}), React.createElement(Route, {"path": "complete_list", "component": CompleteList}))), document.body);
+ReactDOM.render(React.createElement(Router, null, React.createElement(Route, {"path": "/", "component": App}, React.createElement(IndexRoute, {"component": TodoList}), React.createElement(Route, {"path": "complete_list", "component": CompletedList}))), document.body);
