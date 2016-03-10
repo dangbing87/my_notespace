@@ -1,0 +1,31 @@
+<DOCTYPEHTML>
+<html>
+    <head>
+        <title>Flask/GeventWebSocketTest</title>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" charset="utf-8">
+            var host = "ws://127.0.0.1:5000/test/websocket/";
+            var ws = new WebSocket(host);
+
+            ws.onmessage = function(env) {
+                $("#log").append(env.data + '<br />');
+                console.log(JSON.parse(env.data));
+            };
+        $(function(){
+            $("#send").click(function() {
+                ws.send($("#data").val());
+            });
+        });
+        </script>
+</head>
+<body>
+    <h1>Send:</h1>
+    <form method='POST' action='#'>
+        <textarea name='data' id="data"></textarea>
+        <div ><input id="send" type='button' value="send"></div>
+    </form>
+    <h1>Receive:</h1>
+    <div id="log"></div>
+</body>
+</html>
+

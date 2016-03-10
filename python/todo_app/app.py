@@ -10,17 +10,28 @@ from flask import render_template
 
 from flask.ext.pymongo import ObjectId
 
+from gevent import monkey
+from gevent.pywsgi import WSGIServer
+from geventwebsocket.handler import WebSocketHandler
+from flask_sockets import Sockets
+
+import time
+import json
+
+monkey.patch_all()
 app = Flask(__name__)
 app.config['MONGO_DBNAME'] = 'todo'
+
 mongo = PyMongo(app)
+sockets = Sockets(app)
 
 app.config.update(
     DEBUG=True
 )
 
 
-def get_todo_list():
-    todo_list = mongo.db.todo_list.find()
+def get_todo_list(**kwargs):
+    todo_list = mongo.db.todo_list.find(kwargs)
     count = todo_list.count()
     data = []
 
@@ -49,9 +60,7 @@ def get_all_list():
 @app.route('/todo/completed/', methods=['GET'])
 def get_completed_list():
     if request.method == 'GET':
-        todo_list = mongo.db.todo_list.find({'completed': True})
-
-        todo_list, count = get_todo_list()
+        todo_list, count = get_todo_list(completed=True)
         return jsonify(data=todo_list,
                        count=count)
 
@@ -112,5 +121,41 @@ def modify_matter():
         return jsonify(data=todo_list,
                        count=count)
 
+
+@app.route('/asyn/1/', methods=['GET'])
+def test_asyn_one():
+    if request.method == 'GET':
+        time.sleep(10)
+        return 'hello asyn'
+
+
+@app.route('/test/', methods=['GET'])
+def test():
+    return 'hello test'
+
+
+@app.route('/test/websocket/page/')
+def test_websocket_page():
+    return render_template('test_websocket.html')
+
+
+@sockets.route('/test/websocket/')
+def test_websocket(ws):
+    data = None
+
+    while not ws.closed:
+        todo_list, count = get_todo_list()
+
+        if not data == todo_list:
+            data = todo_list
+            send_data = {
+                'data': data,
+                'count': count
+            }
+
+            ws.send(json.dumps(send_data))
+
 if __name__ == "__main__":
-    app.run()
+    # app.run()
+    http_server = WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
+    http_server.serve_forever()
