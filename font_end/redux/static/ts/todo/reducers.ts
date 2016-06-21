@@ -1,4 +1,7 @@
-///<reference path="actions" />
+///<reference path="actions.ts" />
+/// <reference path="../typings/redux/redux.d.ts"/>
+
+import combineReducers = Redux.combineReducers;
 
 interface Todo {
     text: string;
@@ -19,24 +22,33 @@ const initialState: TodoState = {
     todos: []
 };
 
-function todoApp(state: TodoState = initialState, action: Action): TodoState {
+function todos(state: Array<Todo>, action: Action): Array<Todo> {
     switch (action.type) {
-        case SET_VISIBILITY_FILTER:
-            return Object.assign({}, state, { visibilityFilter: action.filter });
         case ADD_TODO:
-            return Object.assign({}, state, {
-                todos: [ ...state.todos, { text: action.text, completed: false }]
-            });
+            return  [ ...state, { text: action.text, completed: false }]
+
         case COMPLETE_TODO:
-            return Object.assign({}, state, {
-                todos: state.todos.map((todo, index) => {
-                    if (index === action.index) {
-                        return Object.assign({}, todo, { completed: !todo.completed });
-                    }
-                    return todo;
-                })
+            return state.map(function(todo, index) {
+                if (index === action.index) {
+                    return Object.assign({}, todo, { completed: !todo.completed });
+                }
+                return todo;
             });
         default:
             return state;
     }
 }
+
+function visibilityFilter(state: string = VisibilityFilters.SHOW_ALL, action: Action): string {
+    switch (action.type) {
+        case SET_VISIBILITY_FILTER:
+            return action.text;
+        default:
+            return state;
+    }
+}
+
+const todoApp = combineReducers({
+    visibilityFilter,
+    todos
+});
