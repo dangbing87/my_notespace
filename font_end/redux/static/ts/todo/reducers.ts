@@ -1,4 +1,4 @@
-///<reference path="actions.ts" />
+/// <reference path="actions.ts" />
 /// <reference path="../typings/redux/redux.d.ts"/>
 
 import combineReducers = Redux.combineReducers;
@@ -22,7 +22,7 @@ const initialState: TodoState = {
     todos: []
 };
 
-function todos(state: Array<Todo>, action: Action): Array<Todo> {
+function todos(state: Array<Todo> = [], action: Action): Array<Todo> {
     switch (action.type) {
         case ADD_TODO:
             return  [ ...state, { text: action.text, completed: false }]

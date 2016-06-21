@@ -1,4 +1,4 @@
-///<reference path="actions.ts" />
+/// <reference path="actions.ts" />
 /// <reference path="../typings/redux/redux.d.ts"/>
 var combineReducers = Redux.combineReducers;
 var initialState = {
@@ -6,6 +6,7 @@ var initialState = {
     todos: []
 };
 function todos(state, action) {
+    if (state === void 0) { state = []; }
     switch (action.type) {
         case ADD_TODO:
             return state.concat([{ text: action.text, completed: false }]);

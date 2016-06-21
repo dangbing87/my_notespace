@@ -1,4 +1,11 @@
 /// <reference path="../typings/react/react-global.d.ts"/>
+/// <reference path="../typings/redux/redux.d.ts"/>
+/// <reference path="../typings/react-redux/react-redux.d.ts"/>
+
+/// <reference path="./actions.ts"/>
+/// <reference path="./reducers.ts"/>
+
+import Provider = ReactRedux.Provider;
 
 interface TodoProp extends Todo {
 }
@@ -97,3 +104,11 @@ class App extends React.Component<any, any> {
         );
     }
 }
+
+let store = Redux.createStore(todoApp);
+let rootElement = document.getElementById("main");
+
+ReactDOM.render(
+    <Provider store={store}><App /></Provider>,
+    rootElement
+);

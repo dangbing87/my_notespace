@@ -6,9 +6,15 @@
 /// <reference path="../react/react.d.ts" />
 /// <reference path="../redux/redux.d.ts" />
 
-declare module "react-redux" {
-  import { ComponentClass, Component, StatelessComponent, ReactNode } from 'react';
-  import { Store, Dispatch, ActionCreator } from 'redux';
+declare namespace ReactRedux {
+  import ComponentClass = React.ComponentClass;
+  import Component = React.Component;
+  import StatelessComponent = React.StatelessComponent;
+  import ReactNode = React.ReactNode;
+
+  import Store = Redux.Store;
+  import Dispatch = Redux.Dispatch;
+  import ActionCreator = Redux.ActionCreator;
 
   interface ComponentDecorator<TOriginalProps, TOwnProps> {
     (component: ComponentClass<TOriginalProps>|StatelessComponent<TOriginalProps>): ComponentClass<TOwnProps>;
@@ -82,7 +88,7 @@ declare module "react-redux" {
      */
     pure?: boolean;
     /**
-    * If true, stores a ref to the wrapped component instance and makes it available via 
+    * If true, stores a ref to the wrapped component instance and makes it available via
     * getWrappedInstance() method. Defaults to false.
     */
     withRef?: boolean;

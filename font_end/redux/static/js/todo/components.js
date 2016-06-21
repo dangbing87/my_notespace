@@ -1,9 +1,14 @@
 /// <reference path="../typings/react/react-global.d.ts"/>
+/// <reference path="../typings/redux/redux.d.ts"/>
+/// <reference path="../typings/react-redux/react-redux.d.ts"/>
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+/// <reference path="./actions.ts"/>
+/// <reference path="./reducers.ts"/>
+var Provider = ReactRedux.Provider;
 var todoList = {
     visibilityFilter: VisibilityFilters.SHOW_ALL,
     todos: [{ text: 'one', completed: false }, { text: 'two', completed: false }]
@@ -76,3 +81,6 @@ var App = (function (_super) {
     };
     return App;
 })(React.Component);
+var store = Redux.createStore(todoApp);
+var rootElement = document.getElementById("main");
+ReactDOM.render(React.createElement(Provider, {"store": store}, React.createElement(App, null)), rootElement);
