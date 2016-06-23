@@ -9,6 +9,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 /// <reference path="./actions.ts"/>
 /// <reference path="./reducers.ts"/>
 var Provider = ReactRedux.Provider;
+var connect = ReactRedux.connect;
 var todoList = {
     visibilityFilter: VisibilityFilters.SHOW_ALL,
     todos: [{ text: 'one', completed: false }, { text: 'two', completed: false }]
@@ -18,8 +19,15 @@ var AddTodo = (function (_super) {
     function AddTodo() {
         _super.apply(this, arguments);
     }
+    AddTodo.prototype.handleSave = function (e) {
+        e.preventDefault();
+        var text = this.refs.todoText.value;
+        if (text.length !== 0) {
+            this.props.addTodo(text);
+        }
+    };
     AddTodo.prototype.render = function () {
-        return (React.createElement("div", null, React.createElement("input", {"type": "text"}), React.createElement("button", null, "Add Todo")));
+        return (React.createElement("div", null, React.createElement("input", {"type": "text", "ref": "todoText"}), React.createElement("button", {"onClick": this.handleSave.bind(this)}, "Add Todo")));
     };
     return AddTodo;
 })(React.Component);
@@ -77,10 +85,15 @@ var App = (function (_super) {
         console.log(filter);
     };
     App.prototype.render = function () {
-        return (React.createElement("div", null, React.createElement(AddTodo, null), React.createElement(TodoList, {"todos": todoList.todos, "visibilityFilter": todoList.visibilityFilter}), React.createElement(Footer, {"filter": VisibilityFilters.SHOW_ALL, "onChangeFilter": this.onChangeFilter.bind(this)})));
+        var _a = this.props, todos = _a.todos, dispatch = _a.dispatch;
+        return (React.createElement("div", null, React.createElement(AddTodo, {"addTodo": function (text) { return dispatch(addTodo(text)); }}), React.createElement(TodoList, {"todos": todoList.todos, "visibilityFilter": todoList.visibilityFilter}), React.createElement(Footer, {"filter": VisibilityFilters.SHOW_ALL, "onChangeFilter": this.onChangeFilter.bind(this)})));
     };
     return App;
 })(React.Component);
+var mapStateToProps = function (state) { return ({
+    todos: state.todos
+}); };
+connect(mapStateToProps)(App);
 var store = Redux.createStore(todoApp);
 var rootElement = document.getElementById("main");
 ReactDOM.render(React.createElement(Provider, {"store": store}, React.createElement(App, null)), rootElement);

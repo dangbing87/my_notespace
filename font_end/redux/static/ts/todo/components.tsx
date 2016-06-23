@@ -6,6 +6,8 @@
 /// <reference path="./reducers.ts"/>
 
 import Provider = ReactRedux.Provider;
+import Dispatch = Redux.Dispatch;
+import connect = ReactRedux.connect;
 
 interface TodoProp extends Todo {
 }
@@ -13,9 +15,18 @@ interface TodoProp extends Todo {
 interface TodoListProp extends TodoState {
 }
 
+interface AddTodoProp {
+    addTodo: (text:string)=> any;
+}
+
 interface FilterProp {
     filter: string;
     onChangeFilter(filter: string): void;
+}
+
+interface AppProps {
+  todos?: Todo[];
+  dispatch?: Dispatch;
 }
 
 var todoList: TodoState = {
@@ -23,18 +34,27 @@ var todoList: TodoState = {
     todos: [ { text: 'one', completed: false}, { text: 'two', completed: false} ]
 };
 
-class AddTodo extends React.Component<any, any> {
+class AddTodo extends React.Component<AddTodoProp, void> {
+    private handleSave(e: Event): void {
+        e.preventDefault();
+        var text: string = this.refs.todoText.value;
+        
+        if (text.length !== 0) {
+            this.props.addTodo(text);
+        }
+    }
+
     public render(): any {
         return (
             <div>
-                <input type="text" />
-                <button>Add Todo</button>
+                <input type="text" ref="todoText" />
+                <button onClick={this.handleSave.bind(this)}>Add Todo</button>
             </div>
         );
     }
 }
 
-class TodoItem extends React.Component<TodoProp, any> {
+class TodoItem extends React.Component<TodoProp, void> {
     public render(): any {
         return (
             <li style={{
@@ -47,7 +67,7 @@ class TodoItem extends React.Component<TodoProp, any> {
     }
 }
 
-class TodoList extends React.Component<TodoListProp, any> {
+class TodoList extends React.Component<TodoListProp, void> {
     public render(): any {
         let chiidrenNodes = this.props.todos.map((todo, index) => {
             return (<TodoItem text={todo.text} completed={todo.completed} />);
@@ -61,7 +81,7 @@ class TodoList extends React.Component<TodoListProp, any> {
     }
 }
 
-class Footer extends React.Component<FilterProp, any> {
+class Footer extends React.Component<FilterProp, void> {
     private renderFilter(filter: string, name: string): any {
         if (filter === this.props.filter) {
             return name;
@@ -89,15 +109,17 @@ class Footer extends React.Component<FilterProp, any> {
     }
 }
 
-class App extends React.Component<any, any> {
+class App extends React.Component<AppProps, void> {
     private onChangeFilter(filter: string) {
         console.log(filter);
     }
 
     public render(): any {
+        const { todos, dispatch } = this.props;
+
         return (
             <div>
-                <AddTodo />
+                <AddTodo addTodo={(text: string) => dispatch(addTodo(text))} />
                 <TodoList todos={todoList.todos} visibilityFilter={todoList.visibilityFilter} />
                 <Footer filter={VisibilityFilters.SHOW_ALL} onChangeFilter={this.onChangeFilter.bind(this)} />
             </div>
@@ -105,10 +127,18 @@ class App extends React.Component<any, any> {
     }
 }
 
+const mapStateToProps = state => ({
+  todos: state.todos
+});
+
+connect(mapStateToProps)(App);
+
 let store = Redux.createStore(todoApp);
 let rootElement = document.getElementById("main");
 
 ReactDOM.render(
-    <Provider store={store}><App /></Provider>,
+    <Provider store={store}>
+        <App />
+    </Provider>,
     rootElement
 );
