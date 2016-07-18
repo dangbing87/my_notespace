@@ -21,8 +21,8 @@ int main(void)
     struct object A = create_object();
 
     A.x = 1;
-    object_decorator(A.say, A);
 
+    object_decorator(A.say, A);
     delete_object(A);
     return 0;
 }
@@ -43,6 +43,7 @@ struct object create_object(void)
     new_object.init = __init;
     new_object.say = __say;
 
+    new_object.init();
     return new_object;
 }
 
