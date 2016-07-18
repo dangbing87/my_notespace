@@ -53,9 +53,11 @@ func TestBubbleSort(a []int, displaySlice bool) {
 }
 
 func InsertionSort(a []int) {
-	var i, j, tmp int
+	var i, j, tmp, arrayLength int
 
-	for j = 1; j < len(a); j++ {
+	arrayLength = len(a)
+
+	for j = 1; j < arrayLength; j++ {
 		tmp = a[j]
 
 		for i = j - 1; i >= 0 && a[i] > tmp; i-- {
