@@ -6,14 +6,18 @@ import (
 	"os"
 )
 
-const ARRAY_LEN = 100000
+const ArrayLen = 10000
 
 func main() {
-	var sortArray []int = algorithms.GetSlice(ARRAY_LEN)
+	var sortArray []int = algorithms.GetSlice(ArrayLen)
+	var displayMode bool = false
+
+	fmt.Println("start...")
 
 	if len(os.Args) < 2 {
-		algorithms.TestBubbleSort(sortArray, false)
-		algorithms.TestInsertionSort(sortArray, false)
+		algorithms.TestBubbleSort(sortArray, displayMode)
+		algorithms.TestInsertionSort(sortArray, displayMode)
+		algorithms.TestMergeSort(sortArray, displayMode)
 		os.Exit(1)
 	}
 
@@ -24,9 +28,11 @@ func main() {
 
 		switch v {
 		case "bubble":
-			algorithms.TestBubbleSort(sortArray, false)
+			algorithms.TestBubbleSort(sortArray, displayMode)
 		case "insertion":
-			algorithms.TestInsertionSort(sortArray, false)
+			algorithms.TestInsertionSort(sortArray, displayMode)
+		case "merge":
+			algorithms.TestMergeSort(sortArray, displayMode)
 		default:
 			fmt.Println("end")
 		}
