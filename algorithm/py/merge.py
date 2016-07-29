@@ -9,7 +9,7 @@ def merge(a=[]):
     right = []
     middle = len(a) / 2
 
-    if len(a) <= 2:
+    if len(a) <= 1:
         return a
 
     left = a[0:middle]
@@ -37,10 +37,13 @@ def merge_sort(left, right):
 
 if __name__ == "__main__":
     a = []
-    [a.append(random.randint(1, 100000)) for i in xrange(100000)]
+    max_length = 10
+    [a.append(random.randint(1, max_length)) for i in xrange(max_length)]
 
+    print a
     start_time = datetime.datetime.now()
     b = merge(a)
     end_time = datetime.datetime.now()
+    print b
 
     print (end_time - start_time)
