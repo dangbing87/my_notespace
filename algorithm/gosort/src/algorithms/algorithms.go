@@ -89,48 +89,42 @@ func TestInsertionSort(a []int, displaySlice bool) {
 }
 
 func MergeSort(a []int) []int {
-	var leftArray, rightArray []int
-	var middleIndex int = len(a) / 2
+	var left, right []int
+	var middle int = len(a) / 2
 
 	if len(a) <= 1 {
 		return a
 	}
 
-	leftArray = make([]int, 0)
-	rightArray = make([]int, 0)
+	left = make([]int, 0)
+	right = make([]int, 0)
 
-	for i, v := range a {
-		if i < middleIndex {
-			leftArray = append(leftArray, v)
-		} else if i >= middleIndex {
-			rightArray = append(rightArray, v)
-		}
-	}
+	left = append(a[0:middle])
+	right = append(a[middle:])
 
-	leftArray = MergeSort(leftArray)
-	rightArray = MergeSort(rightArray)
-	return Merge(leftArray, rightArray)
+	left = MergeSort(left)
+	right = MergeSort(right)
+	return Merge(left, right)
 }
 
-func Merge(leftArray, rightArray []int) []int {
-	// func Merge(left, right []int) []int {
+func Merge(left, right []int) []int {
 	var results []int = make([]int, 0)
 
-	for len(leftArray) > 0 || len(rightArray) > 0 {
-		if len(leftArray) > 0 && len(rightArray) > 0 {
-			if leftArray[0] <= rightArray[0] {
-				results = append(results, leftArray[0])
-				leftArray = leftArray[1:len(leftArray)]
+	for len(left) > 0 || len(right) > 0 {
+		if len(left) > 0 && len(right) > 0 {
+			if left[0] <= right[0] {
+				results = append(results, left[0])
+				left = left[1:len(left)]
 			} else {
-				results = append(results, rightArray[0])
-				rightArray = rightArray[1:len(rightArray)]
+				results = append(results, right[0])
+				right = right[1:len(right)]
 			}
-		} else if len(leftArray) > 0 {
-			results = append(results, leftArray[0])
-			leftArray = leftArray[1:len(leftArray)]
-		} else if len(rightArray) > 0 {
-			results = append(results, rightArray[0])
-			rightArray = rightArray[1:len(rightArray)]
+		} else if len(left) > 0 {
+			results = append(results, left[0])
+			left = left[1:len(left)]
+		} else if len(right) > 0 {
+			results = append(results, right[0])
+			right = right[1:len(right)]
 		}
 	}
 
