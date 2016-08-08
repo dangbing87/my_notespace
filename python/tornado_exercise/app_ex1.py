@@ -11,13 +11,30 @@ import tornado.gen
 
 from tornado.options import define, options
 
+import time
+import datetime
+
 define("port", default=8000, help="run on the given port", type=int)
 
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render('ex1_index.html')
+        #  self.render('ex1_index.html')
+        date = datetime.datetime.now()
+        date = date.strftime('%c')
+        self.write(date)
 
+
+class AsynchronousHandler(tornado.web.RequestHandler):
+    @tornado.web.asynchronous
+    @tornado.gen.coroutine
+    def get(self):
+        yield tornado.gen.Task(
+            tornado.ioloop.IOLoop.instance().add_timeout, time.time() + 30)
+
+        date = datetime.datetime.now()
+        date = date.strftime('%c')
+        self.write(date)
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()
@@ -25,6 +42,7 @@ if __name__ == '__main__':
     app = tornado.web.Application(
         handlers=[
             (r'/', IndexHandler),
+            (r'/asynchronous', AsynchronousHandler)
         ],
         debug=True,
         template_path=os.path.join(os.path.dirname(__file__), "templates")
