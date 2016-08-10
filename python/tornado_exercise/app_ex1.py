@@ -51,6 +51,15 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def on_message(self, message):
         self.write_message(message)
 
+
+class GoodsHandler(tornado.web.RequestHandler):
+    def get(self):
+        context = {
+            'total': 1
+        }
+
+        self.render('goods.html', **context)
+
 if __name__ == '__main__':
     tornado.options.parse_command_line()
 
@@ -59,7 +68,8 @@ if __name__ == '__main__':
             (r'/', IndexHandler),
             (r'/asynchronous', AsynchronousHandler),
             (r'/websocket', WebSocketIndexHandler),
-            (r'/websocket/socket', WebSocketHandler)
+            (r'/websocket/socket', WebSocketHandler),
+            (r'/goods', GoodsHandler)
         ],
         debug=True,
         template_path=os.path.join(os.path.dirname(__file__), 'templates'),
