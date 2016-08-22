@@ -86,4 +86,19 @@ var B = (function(_super, _mixin) {
     };
 }(__super(A), __mixin([MixinA, MixinB])));
 
+var Person = (function() {
+    function Person(name) {
+        this.name = name;
+    }
+
+    Person.prototype.say = function() {
+        console.log(this.name);
+    };
+
+    return Person;
+}());
+
 var b =  new B.init();
+var tom = new Person('Tom');
+
+console.log(tom);
