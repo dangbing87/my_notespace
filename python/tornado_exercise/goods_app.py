@@ -27,11 +27,16 @@ class Goods(object):
         return self.__total
 
     def add_total(self):
-        self.__total += 1
+        if not self.total == 0:
+            self.__total -= 1
+
         self.notify()
 
     def del_total(self):
-        self.__total -= 1
+        if not self.total == 100:
+            self.__total += 1
+
+        self.notify()
 
     def notify(self):
         for callback in self.callbacks:
@@ -46,14 +51,22 @@ class Index(tornado.web.RequestHandler):
         self.render('goods.html', **context)
 
     def post(self):
+        self.total = self.application.goods.total
+
         action = self.get_argument('action')
 
         if action == 'add':
-            self.application.goods.add_total()
+            pass
         elif action == 'remove':
             self.application.goods.del_total()
+            self.write('success remove')
         else:
             self.set_status(400)
+
+    def add_goods(self):
+            if
+            self.application.goods.add_total()
+            self.write('success add')
 
 
 class GoodsSocketHandler(tornado.websocket.WebSocketHandler):
@@ -67,7 +80,6 @@ class GoodsSocketHandler(tornado.websocket.WebSocketHandler):
         pass
 
     def callback(self, count):
-        print count
         self.write_message('{"count" :%d}' %count)
 
 

@@ -1,32 +1,74 @@
 /// <reference path="./typings/jquery/jquery.d.ts" />
 
-let host: string = 'ws://127.0.0.1:8000/websocket_goods',
-    ws: WebSocket = new WebSocket(host);
+interface GoodsEventListener extends EventListener {
+    data: any;
+}
 
-ws.onopen = function(evt: any) {
-    console.log('connected');
-};
+class GoodsClient {
+    private ws: WebSocket;
 
-ws.onmessage = function(evt: any) {
-    var data: void = null,
-        message: any = { data: data };
-
-    try {
-        message.data = JSON.parse(evt.data);
-    } catch (e) {
-        message.data = evt;
+    constructor(host: string) {
+        this.ws = new WebSocket(host);
     }
 
-    $("#total").text(message.data.count);
-};
+    public loop() {
+        this.ws.onopen = function(evt: EventListener) {
+            this.onConnected(evt);
+        }.bind(this);
+
+        this.ws.onmessage = function(evt: GoodsEventListener) {
+            this.onMessage(evt);
+        }.bind(this);
+
+        this.ws.onclose = function(evt: GoodsEventListener) {
+            this.onClosed(evt);
+        }.bind(this);
+    }
+
+    private onConnected(evt: GoodsEventListener) {
+        console.log('client connected');
+    }
+
+    private onMessage(evt: GoodsEventListener) {
+        var data: void = null,
+            message: any = { data: data };
+
+        try {
+            message.data = JSON.parse(evt.data);
+        } catch (e) {
+            message.data = evt;
+        }
+
+        $("#total").text(message.data.count);
+    }
+
+    private onClosed(evt: GoodsEventListener) {
+        console.log('client closed');
+    }
+}
+
+let goodsClient = new GoodsClient('ws://127.0.0.1:8000/websocket_goods');
+goodsClient.loop();
 
 $(function() {
     $("button#add").on("click", function () {
+        //添加货物
         $.ajax({
             'url': '/',
             'type': 'POST',
             'dataType': 'json',
             'data': { 'action': 'add' }
+        });
+    });
+
+
+    $("button#del").on("click", function () {
+        //取消添加
+        $.ajax({
+            'url': '/',
+            'type': 'POST',
+            'dataType': 'json',
+            'data': { 'action': 'remove' }
         });
     });
 });
