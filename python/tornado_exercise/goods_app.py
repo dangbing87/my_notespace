@@ -10,7 +10,7 @@ import tornado.ioloop
 import tornado.options
 
 
-class Goods(object):
+class Cart(object):
     callbacks = []
 
     def __init__(self):
@@ -26,13 +26,13 @@ class Goods(object):
     def total(self):
         return self.__total
 
-    def add_total(self):
+    def add_order(self):
         if not self.total == 0:
             self.__total -= 1
 
         self.notify()
 
-    def del_total(self):
+    def cancel_order(self):
         if not self.total == 100:
             self.__total += 1
 
@@ -46,34 +46,35 @@ class Goods(object):
 class Index(tornado.web.RequestHandler):
     def get(self):
         context = {
-            'total': self.application.goods.total
+            'total': self.application.cart.total
         }
-        self.render('goods.html', **context)
+        self.render('cart.html', **context)
 
     def post(self):
-        self.total = self.application.goods.total
-
         action = self.get_argument('action')
 
         if action == 'add':
-            pass
+            self.add_order()
         elif action == 'remove':
-            self.application.goods.del_total()
-            self.write('success remove')
+            self.cancel_order()
         else:
             self.set_status(400)
 
-    def add_goods(self):
-            self.application.goods.add_total()
-            self.write('success add')
+    def add_order(self):
+        self.application.cart.add_order()
+        self.write('success')
+
+    def cancel_order(self):
+        self.application.cart.cancel_order()
+        self.write('success')
 
 
-class GoodsSocketHandler(tornado.websocket.WebSocketHandler):
+class CartStatusHandler(tornado.websocket.WebSocketHandler):
     def open(self):
-        self.application.goods.register(self.callback)
+        self.application.cart.register(self.callback)
 
     def on_close(self):
-        self.application.goods.unregister(self.callback)
+        self.application.cart.unregister(self.callback)
 
     def on_message(self, message):
         pass
@@ -85,11 +86,11 @@ class GoodsSocketHandler(tornado.websocket.WebSocketHandler):
 class Application(tornado.web.Application):
     def __init__(self):
 
-        self.goods = Goods()
+        self.cart = Cart()
 
         handlers = [
             (r'/', Index),
-            (r'/websocket_goods', GoodsSocketHandler)
+            (r'/cart/detail', CartStatusHandler)
         ]
 
         settings = {

@@ -1,7 +1,12 @@
 /// <reference path="./typings/jquery/jquery.d.ts" />
 var GoodsClient = (function () {
     function GoodsClient(host) {
-        this.ws = new WebSocket(host);
+        try {
+            this.ws = new WebSocket(host);
+        }
+        catch (e) {
+            console.log('connect error: ', e);
+        }
     }
     GoodsClient.prototype.loop = function () {
         this.ws.onopen = function (evt) {
@@ -32,9 +37,9 @@ var GoodsClient = (function () {
     };
     return GoodsClient;
 }());
-var goodsClient = new GoodsClient('ws://127.0.0.1:8000/websocket_goods');
-goodsClient.loop();
 $(function () {
+    var goodsClient = new GoodsClient('ws://127.0.0.1:8000/websocket_goods');
+    goodsClient.loop();
     $("button#add").on("click", function () {
         //添加货物
         $.ajax({
