@@ -64,7 +64,6 @@ class Index(tornado.web.RequestHandler):
             self.set_status(400)
 
     def add_goods(self):
-            if
             self.application.goods.add_total()
             self.write('success add')
 
