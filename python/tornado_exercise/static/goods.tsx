@@ -4,6 +4,11 @@ interface GoodsEventListener extends EventListener {
     data: any;
 }
 
+interface GoodsConnectedData {
+    status: string;
+    session: string;
+}
+
 class GoodsClient {
     private ws: WebSocket;
 
@@ -30,12 +35,18 @@ class GoodsClient {
     }
 
     private onConnected(evt: GoodsEventListener) {
-        console.log('client connected');
+        let session: string = $('input[name="session"]').val(),
+            status: string = 'connected',
+
+            data: GoodsConnectedData = {status: status, session: session };
+
+        this.ws.send(JSON.stringify(data));
     }
 
     private onMessage(evt: GoodsEventListener) {
-        var data: void = null,
-            message: any = { data: data };
+        let data: void = null,
+            message: any = { data: data },
+            mondifyLog;
 
         try {
             message.data = JSON.parse(evt.data);
@@ -43,11 +54,17 @@ class GoodsClient {
             message.data = evt;
         }
 
-        $("#total").text(message.data.count);
+        $('#total').text(message.data.count);
+        mondifyLog = message.data.customer
+                     + '---------'
+                     + message.data.count;
+
+        $('#cart-history').append($("<li>",
+                                    { 'text': mondifyLog }))
     }
 
     private onClosed(evt: GoodsEventListener) {
-        console.log('client closed');
+        console.log('connect closed');
     }
 }
 
@@ -57,23 +74,27 @@ $(function() {
     goodsClient.loop();
 
     $("button#add").on("click", function () {
+        let session: string = $('input[name="session"]').val();
+
         //添加货物
         $.ajax({
             'url': '/',
             'type': 'POST',
             'dataType': 'json',
-            'data': { 'action': 'add' }
+            'data': { 'action': 'add', 'session': session }
         });
     });
 
 
     $("button#del").on("click", function () {
+        let session: string = $('input[name="session"]').val();
+
         //取消添加
         $.ajax({
             'url': '/',
             'type': 'POST',
             'dataType': 'json',
-            'data': { 'action': 'remove' }
+            'data': { 'action': 'remove', 'session': session }
         });
     });
 });

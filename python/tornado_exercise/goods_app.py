@@ -9,49 +9,62 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.options
 
+import tornado.httpclient
+import tornado.gen
+
+from uuid import uuid4 as uuid
+import json
+
 
 class Cart(object):
-    callbacks = []
+    clients = []
 
     def __init__(self):
         self.__total = 100
 
-    def register(self, callback):
-        self.callbacks.append(callback)
+    def register(self, client):
+        self.clients.append(client)
 
-    def unregister(self, callback):
-        self.callbacks.remove(callback)
+    def unregister(self, current_clients):
+        for client in self.clients:
+            if client.session == current_clients.session:
+                self.clients.remove(client)
 
     @property
     def total(self):
         return self.__total
 
-    def add_order(self):
+    def add_order(self, customer_session):
         if not self.total == 0:
             self.__total -= 1
 
-        self.notify()
+        self.notify(customer_session)
 
-    def cancel_order(self):
+    def cancel_order(self, customer_session):
         if not self.total == 100:
             self.__total += 1
 
-        self.notify()
+        self.notify(customer_session)
 
-    def notify(self):
-        for callback in self.callbacks:
-            callback(self.__total)
+    def notify(self, customer_session):
+        for client in self.clients:
+            client.callback(customer_session, self.total)
 
 
 class Index(tornado.web.RequestHandler):
+    @tornado.web.asynchronous
+    @tornado.gen.coroutine
     def get(self):
+        yield tornado.gen.sleep(1)
         context = {
+            'session': uuid(),
             'total': self.application.cart.total
         }
         self.render('cart.html', **context)
 
     def post(self):
         action = self.get_argument('action')
+        self.session = self.get_argument('session')
 
         if action == 'add':
             self.add_order()
@@ -61,26 +74,38 @@ class Index(tornado.web.RequestHandler):
             self.set_status(400)
 
     def add_order(self):
-        self.application.cart.add_order()
+        self.application.cart.add_order(self.session)
         self.write('success')
 
     def cancel_order(self):
-        self.application.cart.cancel_order()
+        self.application.cart.cancel_order(self.session)
         self.write('success')
 
 
 class CartStatusHandler(tornado.websocket.WebSocketHandler):
+    session = ''
+
     def open(self):
-        self.application.cart.register(self.callback)
-
-    def on_close(self):
-        self.application.cart.unregister(self.callback)
-
-    def on_message(self, message):
         pass
 
-    def callback(self, count):
-        self.write_message('{"count" :%d}' %count)
+    def on_close(self):
+        self.application.cart.unregister(self)
+
+    def on_message(self, message):
+        data = json.loads(message)
+
+        self.session = data.get('session')
+
+        if data.get('status') == 'connected':
+            if not data.get('session') == '':
+                self.application.cart.register(self)
+
+    def callback(self, customer, count):
+        context = {
+            'customer': customer,
+            'count': count
+        }
+        self.write_message(json.dumps(context))
 
 
 class Application(tornado.web.Application):
