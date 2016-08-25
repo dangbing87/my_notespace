@@ -10,7 +10,6 @@ import tornado.ioloop
 import tornado.options
 
 import tornado.httpclient
-import tornado.gen
 
 from uuid import uuid4 as uuid
 import json
@@ -52,10 +51,7 @@ class Cart(object):
 
 
 class Index(tornado.web.RequestHandler):
-    @tornado.web.asynchronous
-    @tornado.gen.coroutine
     def get(self):
-        yield tornado.gen.sleep(1)
         context = {
             'session': uuid(),
             'total': self.application.cart.total
