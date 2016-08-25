@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" href="static/css/chatroom.css">
+</head>
+<body>
+    <div class="main">
+        <form id="chatroom" class="pure-g pure-form" action="" method="">
+            <ul>
+                <li class="pure-u-5-6 pure-g">
+                    <textarea id="" class="pure-u-1" name="content" cols="30" rows="10"></textarea>
+                </li>
+                <li>
+                    <button type="submit" class="pure-u-5-6 pure-button pure-button-primary">发送</button>
+                </li>
+            </ul>
+
+        </form>
+    </div>
+
+    <input type="hidden" name="session" value="{{session}}" />
+
+    <script src="http://cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+    <script src="static/built/utils.js"></script>
+    <script src="static/built/chatroom.js"></script>
+</body>
+</html>

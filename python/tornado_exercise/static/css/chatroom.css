@@ -1,0 +1,15 @@
+ul li {
+    list-style: none;
+}
+.main {
+    margin: 0 auto;
+    text-align: center;
+}
+.main>form {
+    margin: 0 auto;
+    display: block;
+}
+
+.main ul li {
+    margin: .5em 0;
+}
