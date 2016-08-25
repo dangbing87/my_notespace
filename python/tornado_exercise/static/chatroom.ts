@@ -10,14 +10,25 @@ namespace ChatRoom {
     }
 
     export class Client extends Utils.Client {
+        onConnected(evt: Utils.WebSocketEvent): void {
+            let registerMessage = {'status': 'register', 'session': session};
+            this.sendMessage(registerMessage);
+        }
+
+        onMessage(evt: Utils.WebSocketEvent): void {
+            console.log(evt);
+        }
+
+        onClosed(evt: Utils.WebSocketEvent): void {
+            console.log('connect closed');
+        }
     }
 
-    export function sendMessage(message: string) {
+    export function sendMessage(content: string) {
         let chatContent: IChatMessage;
 
-        chatContent =$.extend( {}, { 'message': message,'session': session });
+        chatContent =$.extend( {}, { 'content': content,'session': session });
 
-        console.log(chatContent);
         $.ajax({
             'url': '/',
             'type': 'POST',
@@ -32,10 +43,15 @@ namespace ChatRoom {
 
 
 $(function() {
+    let host: string = 'ws://127.0.0.1:8000/chat_room',
+        chatRoom: ChatRoom.Client = new ChatRoom.Client(host);
+
+    chatRoom.loop();
+
     $('form#chatroom').submit(function(e: Event) {
         e.preventDefault();
 
-        var message: string = $('textarea[name="content"]').val();
-        ChatRoom.sendMessage(message);
+        var content: string = $('textarea[name="content"]').val();
+        ChatRoom.sendMessage(content);
     });
 });

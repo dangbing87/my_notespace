@@ -13,13 +13,22 @@ var ChatRoom;
         function Client() {
             _super.apply(this, arguments);
         }
+        Client.prototype.onConnected = function (evt) {
+            var registerMessage = { 'status': 'register', 'session': session };
+            this.sendMessage(registerMessage);
+        };
+        Client.prototype.onMessage = function (evt) {
+            console.log(evt);
+        };
+        Client.prototype.onClosed = function (evt) {
+            console.log('connect closed');
+        };
         return Client;
-    })(Utils.Client);
+    }(Utils.Client));
     ChatRoom.Client = Client;
-    function sendMessage(message) {
+    function sendMessage(content) {
         var chatContent;
-        chatContent = $.extend({}, { 'message': message, 'session': session });
-        console.log(chatContent);
+        chatContent = $.extend({}, { 'content': content, 'session': session });
         $.ajax({
             'url': '/',
             'type': 'POST',
@@ -33,9 +42,11 @@ var ChatRoom;
     ChatRoom.sendMessage = sendMessage;
 })(ChatRoom || (ChatRoom = {}));
 $(function () {
+    var host = 'ws://127.0.0.1:8000/chat_room', chatRoom = new ChatRoom.Client(host);
+    chatRoom.loop();
     $('form#chatroom').submit(function (e) {
         e.preventDefault();
-        var message = $('textarea[name="content"]').val();
-        ChatRoom.sendMessage(message);
+        var content = $('textarea[name="content"]').val();
+        ChatRoom.sendMessage(content);
     });
 });

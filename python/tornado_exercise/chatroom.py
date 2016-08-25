@@ -20,19 +20,20 @@ class JsonMixin(object):
     }
 
     def set_error_message(self, message=None):
+        context = self.__context.copy()
 
         if message is not None and not isinstance(message, dict):
-            self.__context.update({ 'message': message })
-        self.__context.update({ 'status': 'error'})
+            context.update({'message': message})
+        context.update({'status': 'error'})
 
-        return self.__context
+        return context
 
     def set_context(self, context=None):
         if context is None:
             context = {}
 
         if not isinstance(context, dict):
-            context.update({ 'data': context })
+            context.update({'data': context})
         self.__context.update(context)
 
         return self.__context
@@ -40,8 +41,11 @@ class JsonMixin(object):
 
 class Application(tornado.web.Application):
     def __init__(self):
+        self.chat_room = ChatRoom()
+
         handlers = [
-            (r'/', IndexHandler)
+            (r'/', IndexHandler),
+            (r'/chat_room', ChatHandler)
         ]
         settings = {
             'debug': True,
@@ -54,33 +58,64 @@ class Application(tornado.web.Application):
         tornado.web.Application.__init__(self, handlers, **settings)
 
 
+class ChatRoom(object):
+    clients = []
+
+    def register(self, current_client):
+        self.clients.append(current_client)
+
+    def unregister(self, current_client):
+        for client in self.clients:
+            if client.session == current_client.session:
+                self.clients.remove(current_client)
+
 
 class IndexHandler(tornado.web.RequestHandler, JsonMixin):
     def get(self):
-        context = { 'session': uuid() }
+        context = {'session': uuid()}
         self.render('chatroom.html', **context)
 
     def post(self):
+        context = {}
+
         data = self.request.arguments
+        is_validate = self.validator(data)
 
-        print data
+        if is_validate:
+            context = self.set_context()
+        else:
+            context = self.set_error_message(u'数据不合法')
+        self.write(context)
 
-        #  context = {}
+    def validator(self, data):
+        session = data.get('session')
+        content = data.get('content')
 
-        #  if not session.strip() == '' and not content.strip() == '':
-            #  context = self.set_context()
-        self.write('')
+        session = session is not None and session[0] or ''
+        content = content is not None and content[0] or ''
+
+        return not session.strip() == '' and not content.strip() == ''
 
 
 class ChatHandler(tornado.websocket.WebSocketHandler):
-    def on_open(self):
-        print 'a new client'
+    session = ''
 
-    def on_message(self, message):
+    def on_open(self):
         pass
 
     def on_close(self):
-        print 'a client closed'
+        self.application.chat_room.unregister(self)
+
+    def on_message(self, message):
+        message = json.loads(message)
+        session = message.get('session')
+        status = message.get('status')
+
+        if session is not None or not session.strip() == '':
+            self.session = session
+
+            if status == 'register':
+                self.application.chat_room.register(self)
 
 
 if __name__ == '__main__':
@@ -88,6 +123,6 @@ if __name__ == '__main__':
 
     app = Application()
     server = tornado.httpserver.HTTPServer(app)
+
     server.listen(8000)
     tornado.ioloop.IOLoop.instance().start()
-

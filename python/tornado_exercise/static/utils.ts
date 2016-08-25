@@ -30,6 +30,16 @@ namespace Utils {
             }.bind(this);
         }
 
+        sendMessage(message: any) {
+            let messageString: string = '';
+
+            if (message instanceof Object) {
+                messageString = JSON.stringify(message);
+            }
+
+            this.ws.send(messageString);
+        }
+
         abstract onConnected(evt: WebSocketEvent): void;
         abstract onMessage(evt: WebSocketEvent): void;
         abstract onClosed(evt: WebSocketEvent): void;

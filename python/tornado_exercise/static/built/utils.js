@@ -21,7 +21,14 @@ var Utils;
                 this.onClosed(evt);
             }.bind(this);
         };
+        Client.prototype.sendMessage = function (message) {
+            var messageString = '';
+            if (message instanceof Object) {
+                messageString = JSON.stringify(message);
+            }
+            this.ws.send(messageString);
+        };
         return Client;
-    })();
+    }());
     Utils.Client = Client;
 })(Utils || (Utils = {}));
