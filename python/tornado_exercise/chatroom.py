@@ -69,6 +69,10 @@ class ChatRoom(object):
             if client.session == current_client.session:
                 self.clients.remove(current_client)
 
+    def notify(self, message):
+        for client in self.clients:
+            client.send(message)
+
 
 class IndexHandler(tornado.web.RequestHandler, JsonMixin):
     def get(self):
@@ -83,6 +87,10 @@ class IndexHandler(tornado.web.RequestHandler, JsonMixin):
 
         if is_validate:
             context = self.set_context()
+            self.application.chat_room.notify({
+                'content': data.get('content')[0],
+                'session': data.get('session')[0],
+            })
         else:
             context = self.set_error_message(u'数据不合法')
         self.write(context)
@@ -116,6 +124,9 @@ class ChatHandler(tornado.websocket.WebSocketHandler):
 
             if status == 'register':
                 self.application.chat_room.register(self)
+
+    def send(self, message):
+        self.write_message(json.dumps(message))
 
 
 if __name__ == '__main__':

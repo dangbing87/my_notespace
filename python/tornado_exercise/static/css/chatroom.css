@@ -1,15 +1,136 @@
 ul li {
     list-style: none;
 }
-.main {
-    margin: 0 auto;
-    text-align: center;
-}
-.main>form {
-    margin: 0 auto;
-    display: block;
+
+.clearfix {
+    overflow: hidden;
 }
 
-.main ul li {
+
+.main .message-content {
+    padding-top: 20px;
+}
+
+.main .message-content>.message-list {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    height: 500px;
+    margin: 0 auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-shadow: inset 0 1px 3px #ddd;
+}
+
+.main form {
+    margin: 0 auto;
+    text-align: center;
+    display: block;
+}
+.main form>ul {
+    padding: 0;
+}
+
+.main form>ul li {
     margin: .5em 0;
+}
+
+.main .message-content>.message-list ul {
+    padding: 20px 30px;
+    margin: 0;
+}
+
+.main .message-content>.message-list li {
+    margin: 20px 0;
+}
+
+.main .message-content>.message-list dl {
+    margin: 0;
+    line-height: 30px;
+}
+
+.main .message-content>.message-list dl>dt {
+    color: #5992aa;
+}
+
+.main .message-content>.message-list dl>dd {
+    color: #008ed4;
+}
+
+.main .message-content>.message-list .other-user {
+    text-align: left;
+}
+
+.main .message-content>.message-list .other-user dl {
+    border-left: 5px solid #e1f2fa;
+    padding-left: 15px;
+}
+
+.main .message-content>.message-list .current-user {
+    text-align: right;
+}
+
+.main .message-content>.message-list .current-user dl {
+    border-right: 5px solid #e1f2fa;
+    padding-right: 15px;
+}
+
+.main .online-member-list-wrap {
+    float: left;
+}
+
+.main .online-member-list-wrap dl {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-shadow: inset 0 1px 3px #ddd;
+    height: 785px;
+}
+
+.main .online-member-list-wrap dl dt {
+    color: #FFF;
+    background: #0078e7;
+    padding: 10px 0;
+    text-indent: 10px;
+}
+
+.main .online-member-list-wrap dl dd {
+    margin: 0;
+}
+
+.main .online-member-list-wrap dl ul {
+    margin: 0;
+    padding: 0;
+}
+
+
+.main .online-member-list-wrap dl li {
+    color: #0078e7;
+    text-indent: 20px;
+    box-shadow: -2px 3px 9px #ccc;
+}
+
+.main .online-member-list-wrap dl li>a {
+    display: block;
+    text-decoration: inherit;
+    color: #666;
+    padding: 20px 0;
+    text-align: center;
+}
+
+
+.main .online-member-list-wrap dl li>a:hover {
+    background: rgb(66, 184, 221);
+    color: #FFF;
+    transition: all .3s;
+}
+
+.main .chat-wrap {
+    /* float: right; */
+}
+
+.main .chatroom-wrap {
+    display: block;
+    width: 95%;
+    margin: 0 auto;
 }

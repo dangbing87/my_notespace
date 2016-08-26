@@ -4,9 +4,15 @@
 namespace ChatRoom {
     let session: string = $('input[name="session"]').val();
 
-    export interface IChatMessage {
+    export interface IChatMessage extends JSON {
         session: string;
         content: string;
+    }
+
+    export interface IResponseData {
+        status: string;
+        data: any;
+        message: string;
     }
 
     export class Client extends Utils.Client {
@@ -16,28 +22,77 @@ namespace ChatRoom {
         }
 
         onMessage(evt: Utils.WebSocketEvent): void {
-            console.log(evt);
+            let senderSession: string = evt.data.session,
+                data: IChatMessage = this.loadsSocketData(evt.data),
+
+                $messageList: JQuery = $('#message-list'),
+                dialogue: string = `<li class='other-user'>
+                                        <dl>
+                                            <dt>${data.session}</dt>
+                                            <dd>${data.content}</dd>
+                                        </dl>
+                                    </li>`;
+
+            if (!(data.session === session)) {
+                $messageList.append(dialogue);
+                scorllBottom($messageList.parents('div.message-list'));
+            }
         }
 
         onClosed(evt: Utils.WebSocketEvent): void {
             console.log('connect closed');
         }
+
+        loadsSocketData(data: string): IChatMessage {
+            let context: IChatMessage;
+            context = $.extend({}, super.loadsSocketData(data));
+
+            return context;
+        }
     }
 
-    export function sendMessage(content: string) {
-        let chatContent: IChatMessage;
+    export class SendMessage {
+        send(content: string): void {
+            let chatContent: IChatMessage;
 
-        chatContent =$.extend( {}, { 'content': content,'session': session });
+            chatContent =$.extend( {}, { 'content': content,'session': session });
 
-        $.ajax({
-            'url': '/',
-            'type': 'POST',
-            'dataType': 'json',
-            'data': chatContent,
-            'success': function(response) {
-                console.log(response);
+
+            $.ajax({
+                'url': '/',
+                'type': 'POST',
+                'dataType': 'json',
+                'data': chatContent,
+                'success': function(response: IResponseData) {
+                    this.successHandler(response, content);
+                }.bind(this)
+            });
+        }
+
+        successHandler(response: IResponseData, content: string): void {
+            let $messageTextarea: JQuery = $('textarea[name="content"]'),
+                $messageList: JQuery = $('#message-list'),
+                dialogue: string = `<li class='current-user'>
+                                        <dl>
+                                            <dt>${session}</dt>
+                                            <dd>${content}</dd>
+                                        </dl>
+                                    </li>`;
+
+            if (response.status === 'success') {
+                $messageTextarea.val('');
+                $messageList.append(dialogue);
+
+                scorllBottom($messageList.parents('div.message-list'));
             }
-        });
+        }
+    }
+
+    export function scorllBottom($ele: JQuery) {
+        var $eleTmp: HTMLElement = $ele[0],
+            eleHeight: number = $eleTmp.scrollHeight;
+
+        $ele.scrollTop(eleHeight);
     }
 }
 
@@ -51,7 +106,9 @@ $(function() {
     $('form#chatroom').submit(function(e: Event) {
         e.preventDefault();
 
-        var content: string = $('textarea[name="content"]').val();
-        ChatRoom.sendMessage(content);
+        let sendMessage: ChatRoom.SendMessage = new ChatRoom.SendMessage(),
+            content: string = $('textarea[name="content"]').val();
+
+        sendMessage.send(content);
     });
 });

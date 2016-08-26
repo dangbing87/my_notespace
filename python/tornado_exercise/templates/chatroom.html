@@ -8,17 +8,49 @@
 </head>
 <body>
     <div class="main">
-        <form id="chatroom" class="pure-g pure-form" action="" method="">
-            <ul>
-                <li class="pure-u-5-6 pure-g">
-                    <textarea id="" class="pure-u-1" name="content" cols="30" rows="10"></textarea>
-                </li>
-                <li>
-                    <button type="submit" class="pure-u-5-6 pure-button pure-button-primary">发送</button>
-                </li>
-            </ul>
+        <div class="clearfix pure-g chatroom-wrap">
+            <!--begin: online mmeber list-->
+            <!--
+            <div class="pure-u-1-5 online-member-list-wrap">
+                <dl>
+                    <dt>在线成员</dt>
+                    <dd>
+                        <ul>
+                            <li><a href="javascript:;">1111</a></li>
+                            <li><a href="javascript:;">1111</a></li>
+                            <li><a href="javascript:;">1111</a></li>
+                            <li><a href="javascript:;">1111</a></li>
+                            <li><a href="javascript:;">1111</a></li>
+                        </ul>
+                    </dd>
+                </dl>
+            </div>
+            -->
+            <!--end: online member list-->
 
-        </form>
+            <div class="pure-u-1 chat-wrap">
+                <!--begin: message list-->
+                <div class="pure-g message-content">
+                    <div class="pure-u-5-6 message-list">
+                        <ul id="message-list"></ul>
+                    </div>
+                </div>
+                <!--end: message list-->
+
+                <!--begin: chat form-->
+                <form id="chatroom" class="pure-g pure-form" action="" method="">
+                    <ul>
+                        <li class="pure-u-5-6 pure-g">
+                            <textarea id="" class="pure-u-1" name="content" cols="30" rows="10"></textarea>
+                        </li>
+                        <li>
+                            <button type="submit" class="pure-u-5-6 pure-button pure-button-primary">发送</button>
+                        </li>
+                    </ul>
+                </form>
+                <!--end: chat form-->
+            </div>
+        </div>
     </div>
 
     <input type="hidden" name="session" value="{{session}}" />

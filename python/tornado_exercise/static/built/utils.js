@@ -28,6 +28,18 @@ var Utils;
             }
             this.ws.send(messageString);
         };
+        Client.prototype.loadsSocketData = function (data) {
+            var context;
+            if (typeof (data) === 'string') {
+                try {
+                    context = JSON.parse(data);
+                }
+                catch (e) {
+                    console.log(e);
+                }
+            }
+            return context;
+        };
         return Client;
     }());
     Utils.Client = Client;

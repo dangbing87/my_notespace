@@ -40,6 +40,20 @@ namespace Utils {
             this.ws.send(messageString);
         }
 
+        loadsSocketData(data: string): JSON {
+            let context: JSON;
+
+            if (typeof(data) === 'string') {
+                try {
+                    context = JSON.parse(data);
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+
+            return context;
+        }
+
         abstract onConnected(evt: WebSocketEvent): void;
         abstract onMessage(evt: WebSocketEvent): void;
         abstract onClosed(evt: WebSocketEvent): void;
