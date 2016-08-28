@@ -126,7 +126,7 @@ ul li {
 }
 
 .main .chat-wrap {
-    /* float: right; */
+    float: right;
 }
 
 .main .chatroom-wrap {
