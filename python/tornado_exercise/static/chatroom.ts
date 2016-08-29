@@ -16,12 +16,12 @@ namespace ChatRoom {
     }
 
     export class Client extends Utils.Client {
-        onConnected(evt: Utils.WebSocketEvent): void {
+        onConnected(evt: Event): void {
             let registerMessage = {'status': 'register', 'session': session};
             this.sendMessage(registerMessage);
         }
 
-        onMessage(evt: Utils.WebSocketEvent): void {
+        onMessage(evt: MessageEvent): void {
             let senderSession: string = evt.data.session,
                 data: IChatMessage = this.loadsSocketData(evt.data),
 
@@ -39,7 +39,7 @@ namespace ChatRoom {
             }
         }
 
-        onClosed(evt: Utils.WebSocketEvent): void {
+        onClosed(evt: CloseEvent): void {
             console.log('connect closed');
         }
 

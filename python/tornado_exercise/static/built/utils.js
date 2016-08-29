@@ -41,6 +41,6 @@ var Utils;
             return context;
         };
         return Client;
-    }());
+    })();
     Utils.Client = Client;
 })(Utils || (Utils = {}));

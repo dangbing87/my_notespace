@@ -33,7 +33,7 @@ var ChatRoom;
             return context;
         };
         return Client;
-    }(Utils.Client));
+    })(Utils.Client);
     ChatRoom.Client = Client;
     var SendMessage = (function () {
         function SendMessage() {
@@ -60,7 +60,7 @@ var ChatRoom;
             }
         };
         return SendMessage;
-    }());
+    })();
     ChatRoom.SendMessage = SendMessage;
     function scorllBottom($ele) {
         var $eleTmp = $ele[0], eleHeight = $eleTmp.scrollHeight;

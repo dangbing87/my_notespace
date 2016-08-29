@@ -1,10 +1,6 @@
 /// <reference path="./typings/jquery/jquery.d.ts" />
 
 namespace Utils {
-    export interface WebSocketEvent extends EventListener {
-        data: any;
-    }
-
     export abstract class Client {
         ws: WebSocket;
 
@@ -21,11 +17,11 @@ namespace Utils {
                 this.onConnected(evt);
             }.bind(this);
 
-            this.ws.onmessage = function(evt: WebSocketEvent) {
+            this.ws.onmessage = function(evt: MessageEvent) {
                 this.onMessage(evt);
             }.bind(this);
 
-            this.ws.onclose = function(evt: WebSocketEvent) {
+            this.ws.onclose = function(evt: CloseEvent) {
                 this.onClosed(evt);
             }.bind(this);
         }
@@ -54,8 +50,8 @@ namespace Utils {
             return context;
         }
 
-        abstract onConnected(evt: WebSocketEvent): void;
-        abstract onMessage(evt: WebSocketEvent): void;
-        abstract onClosed(evt: WebSocketEvent): void;
+        abstract onConnected(evt: Event): void;
+        abstract onMessage(evt: MessageEvent): void;
+        abstract onClosed(evt: CloseEvent): void;
     }
 }
