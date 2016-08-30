@@ -3,27 +3,34 @@
 namespace Utils {
     export abstract class Client {
         ws: WebSocket;
+        host: string;
 
         constructor(host: string) {
-            try {
-                this.ws = new WebSocket(host);
-            } catch (e) {
-                console.log('connect error: ', e);
-            }
+            this.host = host;
         }
 
         loop(): void {
-            this.ws.onopen = function(evt: EventListener) {
-                this.onConnected(evt);
+            this.connect();
+
+            this.ws.onopen = function() {
+                this.onConnected();
             }.bind(this);
 
             this.ws.onmessage = function(evt: MessageEvent) {
                 this.onMessage(evt);
             }.bind(this);
 
-            this.ws.onclose = function(evt: CloseEvent) {
-                this.onClosed(evt);
+            this.ws.onclose = function(error: CloseEvent) {
+                this.onClosed(error);
             }.bind(this);
+        }
+
+        connect(): void {
+            try {
+                this.ws = new WebSocket(this.host);
+            } catch (e) {
+                console.log('connect error: ', e);
+            }
         }
 
         sendMessage(message: any): void {
@@ -50,9 +57,10 @@ namespace Utils {
             return context;
         }
 
-        abstract onConnected(evt: Event): void;
+        onConnected(): void {}
+
         abstract onMessage(evt: MessageEvent): void;
-        abstract onClosed(evt: CloseEvent): void;
+        abstract onClosed(error: CloseEvent): void;
     }
 
     export function applyMixins(derivedCtor: any, baseCtors: any[]) {

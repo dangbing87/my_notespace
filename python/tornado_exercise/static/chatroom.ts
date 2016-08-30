@@ -2,11 +2,10 @@
 /// <reference path="./utils.ts" />
 
 namespace ChatRoom {
-    let session: string = $('input[name="session"]').val();
-
-    export interface IChatMessage extends JSON {
+    export interface IChatMessage {
         session: string;
         content: string;
+        username: string;
     }
 
     export interface IResponseData {
@@ -17,13 +16,19 @@ namespace ChatRoom {
 
     export interface IOnlineSession {
         session: string;
+        username: string;
     }
 
-    export interface IChatRoomMessage extends JSON {
+    export interface IChatRoomMessage {
         code?: number;
         online_list?: Array<IOnlineSession>;
         session?: string;
         content?: string;
+    }
+
+    export interface IUserInfo {
+        session: string;
+        username: string;
     }
 
     export enum ServerMessageCode {
@@ -31,8 +36,11 @@ namespace ChatRoom {
         onlineSessionList
     }
 
-    export class ChatRoom {
+    export class ChatRoomMixin {
+        userInfo: IUserInfo;
+
         dispatcher(data: IChatRoomMessage): void {
+            console.log(this.userInfo);
             switch (data.code) {
                 case ServerMessageCode.messageList:
                     this.displayMessageList(data);
@@ -52,10 +60,12 @@ namespace ChatRoom {
             $onlineList.html('');
 
             for (let datum of data.online_list) {
-                liTmp = `<li data-session="${datum.session}">
-                            <a href="javascript:;">${datum.session}</a>
-                         </li>`;
-                $onlineList.append(liTmp);
+                if (datum.session !== this.userInfo.session) {
+                    liTmp = `<li data-session="${datum.session}">
+                                <a href="javascript:;">${datum.username}</a>
+                            </li>`;
+                    $onlineList.append(liTmp);
+                }
             }
         }
 
@@ -63,22 +73,40 @@ namespace ChatRoom {
             let $messageList: JQuery = $('#message-list'),
                 dialogue: string = `<li class='other-user'>
                                         <dl>
-                                            <dt>${data.session}</dt>
+                                            <dt>${data.username}</dt>
                                             <dd>${data.content}</dd>
                                         </dl>
                                     </li>`;
 
-            if (!(data.session === session)) {
+            if (data.session !== this.userInfo.session) {
                 $messageList.append(dialogue);
                 scorllBottom($messageList.parents('div.message-list'));
             }
         }
     }
 
-    export class Client extends Utils.Client implements ChatRoom {
-        onConnected(evt: Event): void {
-            let registerMessage = {'status': 'register', 'session': session};
+    export class Client extends Utils.Client implements ChatRoomMixin {
+        session: string;
+        username: string;
+
+        onConnected(): void {
+            let registerMessage = {
+                'status': 'register',
+                'session': this.session,
+                'username': this.username
+            };
+
             this.sendMessage(registerMessage);
+        }
+
+        setRegisterInfo(username: string, session: string) {
+            this.username = username;
+            this.session = session;
+
+            this.userInfo = {
+                username: this.username,
+                session: this.session
+            };
         }
 
         onMessage(evt: MessageEvent): void {
@@ -87,7 +115,7 @@ namespace ChatRoom {
             this.dispatcher(data);
         }
 
-        onClosed(evt: CloseEvent): void {
+        onClosed(error: CloseEvent): void {
             console.log('connect closed');
         }
 
@@ -99,25 +127,37 @@ namespace ChatRoom {
         }
 
         // ChatRoom
+        userInfo: IUserInfo;
         dispatcher: (data: IChatRoomMessage) => void;
         displayOnlineList: (data: IChatRoomMessage) => void;
         displayMessageList: (data: IChatRoomMessage) => void;
     }
 
     export class AjaxMessage {
-        send(content: string): void {
+        session: string;
+        username: string;
+
+        constructor(username:string, session: string) {
+            this.username = username;
+            this.session = session;
+        }
+
+        send(session: string, content: string): void {
             let chatContent: IChatMessage;
 
-            chatContent =$.extend( {}, { 'content': content,'session': session });
-
+            chatContent = {
+                content: content,
+                username: this.username,
+                session: this.session
+            };
 
             $.ajax({
-                'url': '/',
-                'type': 'POST',
-                'dataType': 'json',
-                'data': chatContent,
-                'success': function(response: IResponseData) {
-                    this.successHandler(response, content);
+                url: '/',
+                type: 'POST',
+                dataType: 'json',
+                data: chatContent,
+                success: function(response: IResponseData) {
+                    this.successHandler(response, session, content);
                 }.bind(this)
             });
         }
@@ -127,7 +167,7 @@ namespace ChatRoom {
                 $messageList: JQuery = $('#message-list'),
                 dialogue: string = `<li class='current-user'>
                                         <dl>
-                                            <dt>${session}</dt>
+                                            <dt>${this.username}</dt>
                                             <dd>${content}</dd>
                                         </dl>
                                     </li>`;
@@ -142,7 +182,7 @@ namespace ChatRoom {
     }
 
     //Mixin
-    Utils.applyMixins(Client, [ChatRoom]);
+    Utils.applyMixins(Client, [ChatRoomMixin]);
 
     export function scorllBottom($ele: JQuery) {
         var $eleTmp: HTMLElement = $ele[0],
@@ -155,16 +195,20 @@ namespace ChatRoom {
 
 $(function() {
     let host: string = 'ws://127.0.0.1:8000/chat_room',
+        username = prompt('set your name'),
+        session: string = $('input[name="session"]').val(),
         chatRoom: ChatRoom.Client = new ChatRoom.Client(host);
 
+    chatRoom.setRegisterInfo(username, session);
     chatRoom.loop();
 
     $('form#chatroom').submit(function(e: Event) {
         e.preventDefault();
 
-        let sendMessage: ChatRoom.AjaxMessage = new ChatRoom.AjaxMessage(),
+        let sendMessage: ChatRoom.AjaxMessage = new ChatRoom.AjaxMessage(username,
+                                                                         session),
             content: string = $('textarea[name="content"]').val();
 
-        sendMessage.send(content);
+        sendMessage.send(session, content);
     });
 });

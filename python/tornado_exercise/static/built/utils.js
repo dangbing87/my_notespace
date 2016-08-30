@@ -3,23 +3,27 @@ var Utils;
 (function (Utils) {
     var Client = (function () {
         function Client(host) {
-            try {
-                this.ws = new WebSocket(host);
-            }
-            catch (e) {
-                console.log('connect error: ', e);
-            }
+            this.host = host;
         }
         Client.prototype.loop = function () {
-            this.ws.onopen = function (evt) {
-                this.onConnected(evt);
+            this.connect();
+            this.ws.onopen = function () {
+                this.onConnected();
             }.bind(this);
             this.ws.onmessage = function (evt) {
                 this.onMessage(evt);
             }.bind(this);
-            this.ws.onclose = function (evt) {
-                this.onClosed(evt);
+            this.ws.onclose = function (error) {
+                this.onClosed(error);
             }.bind(this);
+        };
+        Client.prototype.connect = function () {
+            try {
+                this.ws = new WebSocket(this.host);
+            }
+            catch (e) {
+                console.log('connect error: ', e);
+            }
         };
         Client.prototype.sendMessage = function (message) {
             var messageString = '';
@@ -40,6 +44,7 @@ var Utils;
             }
             return context;
         };
+        Client.prototype.onConnected = function () { };
         return Client;
     })();
     Utils.Client = Client;

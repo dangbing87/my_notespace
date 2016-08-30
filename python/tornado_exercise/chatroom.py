@@ -70,6 +70,7 @@ class ChatRoom(NotifyMixin):
 
     def register(self, current_client):
         self.clients.append(current_client)
+        self.notify_online_list()
 
     def unregister(self, current_client):
         for client in self.clients:
@@ -89,7 +90,8 @@ class ChatRoom(NotifyMixin):
 
         for client in self.clients:
             online_session_list.append({
-                'session': client.session
+                'session': client.session,
+                'username': client.username,
             })
 
         context.update({
@@ -116,6 +118,7 @@ class IndexHandler(tornado.web.RequestHandler, JsonMixin, NotifyMixin):
                 'code': self.notify_code.get('message_list'),
                 'content': data.get('content')[0],
                 'session': data.get('session')[0],
+                'username': data.get('username')[0],
             })
         else:
             context = self.set_error_message(u'数据不合法')
@@ -133,6 +136,7 @@ class IndexHandler(tornado.web.RequestHandler, JsonMixin, NotifyMixin):
 
 class ChatHandler(tornado.websocket.WebSocketHandler):
     session = ''
+    username = ''
 
     def on_open(self):
         pass
@@ -142,15 +146,25 @@ class ChatHandler(tornado.websocket.WebSocketHandler):
 
     def on_message(self, message):
         message = json.loads(message)
-        session = message.get('session')
-        status = message.get('status')
 
-        if session is not None or not session.strip() == '':
-            self.session = session
+        if message.get('status') == 'register':
+            self.register(message)
 
-            if status == 'register':
-                self.application.chat_room.register(self)
-                self.application.chat_room.notify_online_list()
+    def register(self, data):
+        print '======================'
+        print data
+        if data.get('username') is None              \
+                or data.get('username').strip() == '':
+            self.on_close()
+            return
+        elif data.get('session') is None or data.get('session').strip() == '':
+            self.on_close()
+            return
+
+        self.session = data.get('session')
+        self.username = data.get('username')
+
+        self.application.chat_room.register(self)
 
     def send(self, message):
         self.write_message(json.dumps(message))
