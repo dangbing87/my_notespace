@@ -26,7 +26,7 @@ namespace Utils {
             }.bind(this);
         }
 
-        sendMessage(message: any) {
+        sendMessage(message: any): void {
             let messageString: string = '';
 
             if (message instanceof Object) {
@@ -53,5 +53,13 @@ namespace Utils {
         abstract onConnected(evt: Event): void;
         abstract onMessage(evt: MessageEvent): void;
         abstract onClosed(evt: CloseEvent): void;
+    }
+
+    export function applyMixins(derivedCtor: any, baseCtors: any[]) {
+        baseCtors.forEach(baseCtor => {
+            Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+                derivedCtor.prototype[name] = baseCtor.prototype[name];
+            });
+        });
     }
 }

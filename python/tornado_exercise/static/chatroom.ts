@@ -15,17 +15,52 @@ namespace ChatRoom {
         message: string;
     }
 
-    export class Client extends Utils.Client {
-        onConnected(evt: Event): void {
-            let registerMessage = {'status': 'register', 'session': session};
-            this.sendMessage(registerMessage);
+    export interface IOnlineSession {
+        session: string;
+    }
+
+    export interface IChatRoomMessage extends JSON {
+        code?: number;
+        online_list?: Array<IOnlineSession>;
+        session?: string;
+        content?: string;
+    }
+
+    export enum ServerMessageCode {
+        messageList,
+        onlineSessionList
+    }
+
+    export class ChatRoom {
+        dispatcher(data: IChatRoomMessage): void {
+            switch (data.code) {
+                case ServerMessageCode.messageList:
+                    this.displayMessageList(data);
+                    break;
+                case ServerMessageCode.onlineSessionList:
+                    this.displayOnlineList(data);
+                    break;
+                default:
+                    break;
+            }
         }
 
-        onMessage(evt: MessageEvent): void {
-            let senderSession: string = evt.data.session,
-                data: IChatMessage = this.loadsSocketData(evt.data),
+        displayOnlineList(data: IChatRoomMessage): void {
+            var $onlineList: JQuery = $('#online-list'),
+                liTmp: string;
 
-                $messageList: JQuery = $('#message-list'),
+            $onlineList.html('');
+
+            for (let datum of data.online_list) {
+                liTmp = `<li data-session="${datum.session}">
+                            <a href="javascript:;">${datum.session}</a>
+                         </li>`;
+                $onlineList.append(liTmp);
+            }
+        }
+
+        displayMessageList(data: IChatRoomMessage): void {
+            let $messageList: JQuery = $('#message-list'),
                 dialogue: string = `<li class='other-user'>
                                         <dl>
                                             <dt>${data.session}</dt>
@@ -38,20 +73,38 @@ namespace ChatRoom {
                 scorllBottom($messageList.parents('div.message-list'));
             }
         }
+    }
+
+    export class Client extends Utils.Client implements ChatRoom {
+        onConnected(evt: Event): void {
+            let registerMessage = {'status': 'register', 'session': session};
+            this.sendMessage(registerMessage);
+        }
+
+        onMessage(evt: MessageEvent): void {
+            let senderSession: string = evt.data.session,
+                data: IChatRoomMessage = this.loadsSocketData(evt.data);
+            this.dispatcher(data);
+        }
 
         onClosed(evt: CloseEvent): void {
             console.log('connect closed');
         }
 
-        loadsSocketData(data: string): IChatMessage {
-            let context: IChatMessage;
+        loadsSocketData(data: string): IChatRoomMessage {
+            let context: IChatRoomMessage;
             context = $.extend({}, super.loadsSocketData(data));
 
             return context;
         }
+
+        // ChatRoom
+        dispatcher: (data: IChatRoomMessage) => void;
+        displayOnlineList: (data: IChatRoomMessage) => void;
+        displayMessageList: (data: IChatRoomMessage) => void;
     }
 
-    export class SendMessage {
+    export class AjaxMessage {
         send(content: string): void {
             let chatContent: IChatMessage;
 
@@ -88,6 +141,9 @@ namespace ChatRoom {
         }
     }
 
+    //Mixin
+    Utils.applyMixins(Client, [ChatRoom]);
+
     export function scorllBottom($ele: JQuery) {
         var $eleTmp: HTMLElement = $ele[0],
             eleHeight: number = $eleTmp.scrollHeight;
@@ -106,7 +162,7 @@ $(function() {
     $('form#chatroom').submit(function(e: Event) {
         e.preventDefault();
 
-        let sendMessage: ChatRoom.SendMessage = new ChatRoom.SendMessage(),
+        let sendMessage: ChatRoom.AjaxMessage = new ChatRoom.AjaxMessage(),
             content: string = $('textarea[name="content"]').val();
 
         sendMessage.send(content);

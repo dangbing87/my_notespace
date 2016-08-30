@@ -58,7 +58,14 @@ class Application(tornado.web.Application):
         tornado.web.Application.__init__(self, handlers, **settings)
 
 
-class ChatRoom(object):
+class NotifyMixin(object):
+    notify_code = {
+        'message_list': 0,
+        'online_session_list': 1
+    }
+
+
+class ChatRoom(NotifyMixin):
     clients = []
 
     def register(self, current_client):
@@ -73,8 +80,26 @@ class ChatRoom(object):
         for client in self.clients:
             client.send(message)
 
+    def notify_online_list(self):
+        context = {
+            'code': self.notify_code.get('online_session_list'),
+            'online_list': []
+        }
+        online_session_list = []
 
-class IndexHandler(tornado.web.RequestHandler, JsonMixin):
+        for client in self.clients:
+            online_session_list.append({
+                'session': client.session
+            })
+
+        context.update({
+            'online_list': online_session_list
+        })
+
+        self.notify(context)
+
+
+class IndexHandler(tornado.web.RequestHandler, JsonMixin, NotifyMixin):
     def get(self):
         context = {'session': uuid()}
         self.render('chatroom.html', **context)
@@ -88,6 +113,7 @@ class IndexHandler(tornado.web.RequestHandler, JsonMixin):
         if is_validate:
             context = self.set_context()
             self.application.chat_room.notify({
+                'code': self.notify_code.get('message_list'),
                 'content': data.get('content')[0],
                 'session': data.get('session')[0],
             })
@@ -124,6 +150,7 @@ class ChatHandler(tornado.websocket.WebSocketHandler):
 
             if status == 'register':
                 self.application.chat_room.register(self)
+                self.application.chat_room.notify_online_list()
 
     def send(self, message):
         self.write_message(json.dumps(message))

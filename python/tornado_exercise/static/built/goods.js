@@ -41,7 +41,7 @@ var GoodsClient = (function () {
         console.log('connect closed');
     };
     return GoodsClient;
-}());
+})();
 $(function () {
     var goodsClient = new GoodsClient('ws://127.0.0.1:8000/cart/detail');
     goodsClient.loop();
