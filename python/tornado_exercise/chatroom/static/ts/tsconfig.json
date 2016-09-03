@@ -3,7 +3,7 @@
         "module": "commonjs",
         "target": "es3",
         "noImplicitAny": false,
-        "outDir": "built",
+        "outDir": "../js/",
         "rootDir": ".",
         "sourceMap": false
     },
