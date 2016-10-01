@@ -57,8 +57,7 @@ namespace Utils {
             return context;
         }
 
-        onConnected(): void {}
-
+        abstract onConnected(): void;
         abstract onMessage(evt: MessageEvent): void;
         abstract onClosed(error: CloseEvent): void;
     }

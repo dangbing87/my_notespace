@@ -19,11 +19,12 @@ namespace ChatRoom {
         username: string;
     }
 
-    export interface IChatRoomMessage {
+    export interface IChatRoomMessage extends JSON {
         code?: number;
         online_list?: Array<IOnlineSession>;
         session?: string;
         content?: string;
+        username?: string;
     }
 
     export interface IUserInfo {

@@ -151,8 +151,6 @@ class ChatHandler(tornado.websocket.WebSocketHandler):
             self.register(message)
 
     def register(self, data):
-        print '======================'
-        print data
         if data.get('username') is None              \
                 or data.get('username').strip() == '':
             self.on_close()
