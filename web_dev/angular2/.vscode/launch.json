@@ -5,7 +5,7 @@
             "type": "python",
             "request": "launch",
             "stopOnEntry": true,
-            "pythonPath": "/home/danny/.virtualenvs/tornado/bin/python",
+            "pythonPath": "/home/herr/.virtualenvs/tornado_exercise/bin/python",
             "program": "${workspaceRoot}/app.py",
             "debugOptions": [
                 "WaitOnAbnormalExit",

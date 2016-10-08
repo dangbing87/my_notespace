@@ -1,0 +1,9 @@
+*.out
+*.o
+algorithm/gosort/bin
+algorithm/gosort/pkg
+algorithm/gosort/src/github.com
+algorithm/gosort/src/golang.org
+algorithm/gosort/src/gopkg.in
+
+.vscode
