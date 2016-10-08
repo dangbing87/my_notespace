@@ -1,0 +1,17 @@
+{
+    "name": "angular2",
+    "homepage": "https://github.com/wskssau/my_notespace",
+    "authors": [
+        "danny <1211740652@qq.com>"
+    ],
+    "description": "",
+    "main": "",
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "static/lib",
+        "test",
+        "tests"
+    ]
+}
