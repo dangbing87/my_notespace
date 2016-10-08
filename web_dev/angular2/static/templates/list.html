@@ -4,7 +4,8 @@
     <form class="uk-form">
         <ul class="uk-list uk-list-space uk-margin-large-left">
             <li ng-repeat="todo in todos">
-                <input type="checkbox" name="" value="">
+                <input type="checkbox" name="" value="" checked ng-if="todo.completed" />
+                <input type="checkbox" name="" value="" ng-if="!todo.completed" />
                 <input type="text" ng-model="todo.title" ng-blur="modifyTodoTitle($event, todo.id, todo.title)" />
             </li>
         </ul>
