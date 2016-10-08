@@ -1,6 +1,12 @@
-<div ng-controller="TodoController">
-    <ul>
-        <li ng-repeat="todo in todos">{{todo.title}}</li>
-    </ul>
-    <button type="button" ng-click="test($event)">click</button>
+<div ng-controller="TodoController" class="uk-panel uk-panel-box uk-panel-box-primary uk-width-2-3 uk-container-center uk-margin-large-top">
+    <h3 class="uk-panel-title">Todo List</h3>
+
+    <form class="uk-form">
+        <ul class="uk-list uk-list-space uk-margin-large-left">
+            <li ng-repeat="todo in todos">
+                <input type="checkbox" name="" value="">
+                <input type="text" ng-model="todo.title" ng-blur="modifyTodoTitle($event, todo.id, todo.title)" />
+            </li>
+        </ul>
+    </form>
 </div>

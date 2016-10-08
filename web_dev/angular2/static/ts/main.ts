@@ -2,12 +2,20 @@
 
 namespace Todo {
     interface ITodo {
+        id: string;
         title: string;
         completed: boolean;
     }
 
     interface ITodoScope extends ng.IScope {
         todos: Array<ITodo>;
+        modifyTodoTitle(event: Event, todoId: String, newTitle: string): void;
+    }
+
+    interface ITodoRequestParams {
+        id: string;
+        title?: string;
+        completed?: boolean;
     }
 
     let app: ng.IModule = angular.module('app', []);
@@ -20,21 +28,22 @@ namespace Todo {
                 this.getSuccessHandler($scope, response);
             }.bind(this));
 
-            $scope.test = function(event: Event) {
-                console.log(event);
-                this.test($http);
-            };
+            $scope.modifyTodoTitle = function (event: Event, todoId: string,
+                newTitle: string) {
+                    let todoParam: ITodoRequestParams = {
+                        id: todoId,
+                        title: newTitle
+                    };
+                    
+                    $http.post('/todo/title', todoParam, function(response) {
+                        console.log(response);
+                    });
+                };
         }
 
         getSuccessHandler($scope: ITodoScope, response) {
             let todos: Array<ITodo> = response.data.data;
             $scope.todos = response.data.data;
-        }
-
-        test($http: ng.IHttpService) {
-            $http.post('/todo/title', {
-                'id': 1212121
-            });
         }
     }
     app.controller('TodoController', TodoController)
