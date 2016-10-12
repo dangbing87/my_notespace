@@ -13,7 +13,7 @@ namespace Todo {
     }
 
     interface ITodoRequestParams {
-        id: string;
+        todo_id: string;
         title?: string;
         completed?: boolean;
     }
@@ -37,11 +37,13 @@ namespace Todo {
             $scope.modifyTodoTitle = (event: Event, todoId: string,
                 newTitle: string) => {
                 let todoParam: ITodoRequestParams = {
-                    id: todoId,
+                    todo_id: todoId,
                     title: newTitle
                 };
 
-                $http.post('/todo/title', todoParam);
+                $http.put('/todo/title', todoParam).then(function(response) {
+                    console.log(response);
+                });
             };
         }
 

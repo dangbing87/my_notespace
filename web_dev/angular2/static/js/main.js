@@ -9,10 +9,12 @@ var Todo;
             }.bind(this));
             $scope.modifyTodoTitle = function (event, todoId, newTitle) {
                 var todoParam = {
-                    id: todoId,
+                    todo_id: todoId,
                     title: newTitle
                 };
-                $http.post('/todo/title', todoParam);
+                $http.put('/todo/title', todoParam).then(function (response) {
+                    console.log(response);
+                });
             };
         }
         TodoController.prototype.getSuccessHandler = function ($scope, todos) {
