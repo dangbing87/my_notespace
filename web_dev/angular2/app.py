@@ -124,6 +124,12 @@ class TodoTitleHandler(JsonHandler):
             })
         return result
 
+class TodoHandler(JsonHandler):
+    """
+    Todo Handler
+    """
+    def del
+
 
 if __name__ == '__main__':
     tornado.options.parse_command_line()

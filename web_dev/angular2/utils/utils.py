@@ -22,7 +22,7 @@ class JsonHandler(BaseHandler):
 
     def get_request_params(self):
         return json.loads(self.request.body)
-    
+
     def success_response(self, context=None):
         context = self.get_response_context(context)
         self.ajax_response(context)
@@ -33,7 +33,7 @@ class JsonHandler(BaseHandler):
         self.status = 'error'
         self.message = message if message is not None else ''
         self.ajax_response(context)
-        
+
     def get_response_context(self, context=None):
         if context is None:
             context = {}
